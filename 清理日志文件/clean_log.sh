@@ -11,6 +11,14 @@ if [ ! -d "$dirPath" ]; then
     exit 1
 fi
 
+overdueDays=$2
+if [ ! -n "$overdueDays" ]; then
+    # 如果没有数据过期文件的天数值，则默认为30天
+    overdueDays=30
+fi
+
+overdueSeconds=`expr ${overdueDays} \* 24 \* 3600`
+
 echo "开始清理文件，路径:${dirPath}"
 
 # 定位到指定目录
@@ -21,8 +29,8 @@ for file in `ls | grep "\.log"`; do
         # 如果是文件则判断最后修改时间
         modifyTime=$(eval "stat -c %Y ${file}")
         diffTime=$[ $currTime - $modifyTime ]
-        # 最后修改时间超过30天的
-        if [ $diffTime -gt 2592000 ]; then
+        # 最后修改时间超过overdueDays天的
+        if [ $diffTime -gt overdueSeconds ]; then
             echo "删除文件:${dirPath}/${file}" 
             eval "mv ${file} ${file}.bak"
         fi

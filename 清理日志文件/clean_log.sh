@@ -17,8 +17,6 @@ if [ ! -n "$overdueDays" ]; then
     overdueDays=30
 fi
 
-overdueSeconds=`expr ${overdueDays} \* 24 \* 3600`
-
 echo "开始清理文件，路径:${dirPath}"
 
 # 定位到指定目录
@@ -26,7 +24,8 @@ filesToRm=$(eval "find ${dirPath} -mtime +${overdueDays} -type f")
 for file in ${filesToRm}; do
     if [ -f "$file" ]; then
         echo "删除文件:${file}"
-        eval "mv ${file} ${file}.bak"
+        #eval "mv ${file} ${file}.bak"
+        eval "rm ${file}"
     fi
 done
 

@@ -22,18 +22,11 @@ overdueSeconds=`expr ${overdueDays} \* 24 \* 3600`
 echo "开始清理文件，路径:${dirPath}"
 
 # 定位到指定目录
-cd $dirPath
-currTime=`date +%s`
-for file in `ls | grep "\.log"`; do
+filesToRm=$(eval "find ${dirPath} -mtime +${overdueDays} -type f")
+for file in ${filesToRm}; do
     if [ -f "$file" ]; then
-        # 如果是文件则判断最后修改时间
-        modifyTime=$(eval "stat -c %Y ${file}")
-        diffTime=$[ $currTime - $modifyTime ]
-        # 最后修改时间超过overdueDays天的
-        if [ $diffTime -gt overdueSeconds ]; then
-            echo "删除文件:${dirPath}/${file}" 
-            eval "mv ${file} ${file}.bak"
-        fi
+        echo "删除文件:${file}"
+        eval "mv ${file} ${file}.bak"
     fi
 done
 

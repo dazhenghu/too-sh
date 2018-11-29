@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# $1：需要清理的路径；$2：单位"天"，清除最后修改时间在指定天数之前的文件
+# $1：需要清理的路径；$2：单位"天"，清除最后修改时间在指定天数之前的文件，默认30天之前
 
 dirPath=$1
 if [ ! -n "$dirPath" ]; then
@@ -15,11 +15,12 @@ fi
 
 overdueDays=$2
 if [ ! -n "$overdueDays" ]; then
-    # 如果没有数据过期文件的天数值，则默认为30天
+    # 如果没有输入过期文件的天数值，则默认为30天
     overdueDays=30
 fi
 
 echo "开始清理文件，路径:${dirPath}"
+echo "执行日期："`date`
 
 # 定位到指定目录
 filesToRm=$(eval "find ${dirPath} -mtime +${overdueDays} -type f")
